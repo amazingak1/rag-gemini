@@ -1,11 +1,12 @@
 import streamlit as st
 import os
 import google.genai as genai
-
+#DONT use google.generativeai. Use google.genai
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import GoogleGenerativeAIEmbeddings
+# from langchain_community.embeddings import GoogleGenerativeAIEmbeddings #error showing
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
 from langchain_community.document_loaders import TextLoader
 
 # ---------------- CONFIG ----------------
@@ -14,6 +15,7 @@ st.title("📄 RAG Document QA (Gemini 2.5 Flash)")
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
+
 
 # ---------------- LOAD & EMBED ----------------
 @st.cache_resource
@@ -59,3 +61,5 @@ Question:
     response = model.generate_content(prompt)
     st.subheader("Answer")
     st.write(response.text)
+# ---------------- END ----------------
+#ArpitKumar
