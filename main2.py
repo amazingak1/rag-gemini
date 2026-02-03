@@ -14,9 +14,20 @@ st.title("📄 RAG Document QA (Gemini 2.5 Flash)")
 # Load API key from environment
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+
 if not GOOGLE_API_KEY:
     st.error("GOOGLE_API_KEY not found. Please add it in Streamlit Secrets.")
     st.stop()
+
+# 🔴 ADD THIS LINE (CRITICAL)
+os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
+os.environ["GEMINI_API_KEY"] = GOOGLE_API_KEY  # backup name LangChain checks
+
+genai.configure(api_key=GOOGLE_API_KEY)
+
+
+
 
 # Configure Gemini (OLD SDK – REQUIRED for LangChain)
 genai.configure(api_key=GOOGLE_API_KEY)
