@@ -14,7 +14,11 @@ st.set_page_config(page_title="RAG with Gemini")
 st.title("📄 RAG Document QA (Gemini 2.5 Flash)")
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-genai.configure(api_key=GOOGLE_API_KEY)
+# genai.configure(api_key=GOOGLE_API_KEY)
+client = genai.Client(api_key=GOOGLE_API_KEY)
+
+#temp
+print("API KEY FOUND:", GOOGLE_API_KEY is not None)
 
 
 # ---------------- LOAD & EMBED ----------------
@@ -39,7 +43,8 @@ def load_vectorstore():
 vectorstore = load_vectorstore()
 
 # ---------------- GEMINI MODEL ----------------
-model = genai.GenerativeModel("gemini-2.5-flash")
+# model = genai.GenerativeModel("gemini-2.5-flash")
+model = client.models.get("gemini-2.5-flash")
 
 query = st.text_input("Ask a question from the document")
 
@@ -63,3 +68,4 @@ Question:
     st.write(response.text)
 # ---------------- END ----------------
 #ArpitKumar
+# streamlit run main.py
