@@ -9,3 +9,4 @@ faiss-cpu
 tiktoken
 google.genai
 google-generativeai
+python-dotenv

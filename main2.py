@@ -1,5 +1,8 @@
 import streamlit as st
 import os
+from dotenv import load_dotenv
+load_dotenv()
+
 import google.generativeai as genai
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
