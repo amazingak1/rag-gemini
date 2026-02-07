@@ -64,7 +64,7 @@ query = st.text_input("Ask a question from the document")
 
 if query:
     docs = vectorstore.similarity_search(query, k=3)
-    context = "\n".join([doc.page_content for doc in docs])
+    context = "\n".join([doc.page_content for doc in docs]) # real
 
     prompt = f"""
 Answer ONLY using the context below.
@@ -83,3 +83,4 @@ Question:
     st.write(response.text)
 
 # ---------------- END ----------------
+#streamlit run main2.py
