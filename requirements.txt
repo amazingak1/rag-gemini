@@ -10,6 +10,6 @@ tiktoken
 google.genai
 google-generativeai
 python-dotenv
-pydf
 langchain_huggingface
 sentence-transformers
+pypdf
