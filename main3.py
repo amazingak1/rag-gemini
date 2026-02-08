@@ -25,7 +25,7 @@ client = genai.Client(api_key=GOOGLE_API_KEY)
 
 # ---------------- UI ----------------
 st.set_page_config(page_title="PDF RAG with Highlighting")
-st.title("📘 Chat with PDF (RAG + Highlighted Sources)3")
+st.title("📘 Chat with PDF (RAG + Highlighted Sources)")
 
 uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 
