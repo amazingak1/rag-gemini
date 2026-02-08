@@ -55,19 +55,24 @@ if uploaded_file:
         tmp.write(uploaded_file.read())
         pdf_path = tmp.name
 
-    vectorstore = build_vectorstore(pdf_path)
-    st.success("PDF indexed successfully!")
+    try:
+        vectorstore = build_vectorstore(pdf_path)
+        st.success("✅ PDF indexed successfully!")
+    except Exception as e:
+        st.error(f"Error processing PDF: {e}")
+        st.stop()
 
 # ---------------- QUERY ----------------
 query = st.text_input("Ask a question from the PDF", placeholder="e.g., What is the main topic?")
 
 if query and vectorstore:
-    retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
-    docs = retriever.invoke(query)
+    with st.spinner("Searching for relevant information..."):
+        retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+        docs = retriever.invoke(query)
 
-    context = "\n\n".join(doc.page_content for doc in docs)
+        context = "\n\n".join(doc.page_content for doc in docs)
 
-    prompt = f"""
+        prompt = f"""
 Answer ONLY using the context below.
 If the answer is not present, say "I don't know".
 try to answer in short
@@ -84,16 +89,16 @@ Question:
     )
 
     # -------- ANSWER --------
-    st.subheader("Answer")
+    st.subheader("💡 Answer")
     st.write(response.text)
 
     # -------- SOURCES --------
-    st.subheader("Answer Sources (Highlighted)")
+    st.subheader("📄 Sources (Retrieved Chunks)")
     for i, doc in enumerate(docs, start=1):
         page = doc.metadata.get("page", "N/A")
         source = os.path.basename(doc.metadata.get("source", "PDF"))
 
-        with st.expander(f"Source {i}: {source} (page {page})"):
+        with st.expander(f"📍 Source {i}: {source} (Page {page})"):
             st.markdown(
                 f"""
                 <div style="background-color:#fff3cd;
