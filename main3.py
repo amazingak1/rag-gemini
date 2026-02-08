@@ -59,7 +59,7 @@ if uploaded_file:
     st.success("PDF indexed successfully!")
 
 # ---------------- QUERY ----------------
-query = st.text_input("Ask a question from the PDF")
+query = st.text_input("Ask a question from the PDF", placeholder="e.g., What is the main topic?")
 
 if query and vectorstore:
     retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
