@@ -20,13 +20,66 @@ You can upload a PDF, ask questions about its content, and get **short, accurate
 ## 🛠️ Tech Stack
 
 - **Streamlit** – UI
-- **LangChain**
+- **LangChain** – Orchestration & document processing
 - **FAISS** – Vector database
-- **HuggingFace Embeddings**
-- **Google Gemini (genai SDK)**
-- **PyPDFLoader**
+- **HuggingFace Embeddings** – Semantic text embeddings
+- **Google Gemini** – Answer generation
+- **PyPDFLoader** – PDF extraction
 
 ---
 
 ## 📂 Project Structure
 
+
+├── main3.py # Streamlit app<br>
+├── .env # API keys<br>
+├── requirements.txt # Dependencies<br>
+└── README.md
+<hr>
+
+## 📦 Installation<br>
+```
+pip install -r requirements.txt
+```
+
+
+## 🧠 How It Works
+
+- Upload a PDF – Use the file uploader widget
+- PDF Processing – Document is split into overlapping chunks (800 chars, 150 char overlap)
+- Embeddings – Chunks are converted into embeddings using HuggingFace MiniLM
+- Vector Store – Embeddings are stored in FAISS for fast retrieval
+- Query Processing – User question retrieves top-3 relevant chunks
+- Answer Generation – Gemini generates an answer strictly from retrieved context
+- Source Display – Original chunks are shown with page numbers and highlighting
+
+---
+
+## 🧪 Example Prompts
+
+Try asking these questions after uploading a PDF:
+
+- "What is the main topic discussed in this PDF?"
+- "Summarize the key points"
+- "What does the document say about [specific topic]?"
+- "Who are the authors?"
+
+---
+
+## ⚠️ Important Notes
+
+### Accuracy & Grounding
+
+- ✅ Answers are strictly grounded in PDF context
+- ✅ No hallucinations – If information is missing, the app responds with "I don't know"
+- ❌ Does not generate information outside the PDF content
+
+### PDF Compatibility
+
+- ✅ Works best with text-based PDFs
+- ❌ May struggle with scanned images (OCR not included)
+
+### Performance
+
+- Vector stores are cached for faster repeated queries
+- First query may take a few seconds while embeddings are computed
