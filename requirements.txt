@@ -13,3 +13,4 @@ python-dotenv
 langchain_huggingface
 sentence-transformers
 pypdf
+langchain-google-genai
