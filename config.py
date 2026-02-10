@@ -4,9 +4,9 @@ from dotenv import load_dotenv
 from google import genai
 
 # -------- LOAD ENV --------
-BASE_DIR = Path(__file__).resolve().parent
-ENV_PATH = BASE_DIR / ".env"
-load_dotenv(dotenv_path=ENV_PATH)
+# BASE_DIR = Path(__file__).resolve().parent
+# ENV_PATH = BASE_DIR / ".env"
+load_dotenv()
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
@@ -15,10 +15,10 @@ if not GOOGLE_API_KEY:
 
 # ✅ CRITICAL FIX (force SDK to see the key)
 os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
-genai.configure(api_key=GOOGLE_API_KEY)
+# genai.configure(api_key=GOOGLE_API_KEY)
 
 # Create client AFTER configure
-client = genai.Client()
+client = genai.Client(api_key=GOOGLE_API_KEY)
 
 # ---------------- UI HIGHLIGHT CONFIG ----------------
 HIGHLIGHT_BG_COLOR = "#fff3cd"
