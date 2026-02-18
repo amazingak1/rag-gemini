@@ -1,3 +1,4 @@
+import time
 import streamlit as st
 import os
 import tempfile
@@ -152,19 +153,45 @@ Context:
 Question:
 {query}
 """
-
-            response = client.models.generate_content(
+            #here
+            # response = client.models.generate_content(
+            #     model="gemini-2.5-flash",
+            #     contents=prompt
+            # )
+            #
+            # answer = response.text
+            #
+            # st.write(answer)
+            #
+            # st.session_state.messages.append({
+            #     "role": "assistant",
+            #     "content": answer
+            # })
+            stream = client.models.generate_content_stream(
                 model="gemini-2.5-flash",
                 contents=prompt
             )
 
-            answer = response.text
+            # placeholder for typing effect
+            response_placeholder = st.empty()
+            time.sleep(0.02)
+            full_response = ""
 
-            st.write(answer)
+            for chunk in stream:
 
+                if chunk.text:
+                    full_response += chunk.text
+
+                    # typing cursor effect
+                    response_placeholder.markdown(full_response + "▌")
+
+            # final clean output
+            response_placeholder.markdown(full_response)
+
+            # save to chat history
             st.session_state.messages.append({
                 "role": "assistant",
-                "content": answer
+                "content": full_response
             })
 
         # -------- SOURCES --------
