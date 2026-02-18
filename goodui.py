@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 # LangChain
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader, TextLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 
 # NEW Gemini SDK
@@ -106,18 +106,23 @@ with st.sidebar:
 
 # ---------------- MAIN CONTENT ----------------
 # Header
-st.markdown('<p class="main-header">📘 Chat with Your PDF</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-header">Upload a PDF and ask questions using AI-powered retrieval</p>',
+st.markdown('<p class="main-header">📘 Chat with Your Documents</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-header">Upload a PDF, DOCX, TXT and ask questions using AI-powered retrieval</p>',
             unsafe_allow_html=True)
 
 # Two-column layout
 col1, col2 = st.columns([2, 1])
 
 with col1:
+    # uploaded_file = st.file_uploader(
+    #     "📎 Upload PDF Document",
+    #     type=["pdf"],
+    #     help="Upload a PDF file to start asking questions"
+    # )
     uploaded_file = st.file_uploader(
-        "📎 Upload PDF Document",
-        type=["pdf"],
-        help="Upload a PDF file to start asking questions"
+    "📎 Upload Document",
+    type=["pdf", "docx", "txt"],
+    help="Upload a PDF, DOCX, or TXT file"
     )
 
 with col2:
@@ -140,17 +145,34 @@ embeddings = get_embeddings()
 
 # ---------------- VECTORSTORE ----------------
 @st.cache_resource
-def build_vectorstore(pdf_path, _chunk_size, _chunk_overlap):
-    loader = PyPDFLoader(pdf_path)
+def build_vectorstore(file_path, _chunk_size, _chunk_overlap):
+
+    # Detect file type
+    ext = os.path.splitext(file_path)[1].lower()
+
+    if ext == ".pdf":
+        loader = PyPDFLoader(file_path)
+
+    elif ext == ".docx":
+        loader = Docx2txtLoader(file_path)
+
+    elif ext == ".txt":
+        loader = TextLoader(file_path, encoding="utf-8")
+
+    else:
+        raise ValueError(f"Unsupported file type: {ext}")
+
     documents = loader.load()
 
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=_chunk_size,
         chunk_overlap=_chunk_overlap
     )
+
     chunks = splitter.split_documents(documents)
 
     return FAISS.from_documents(chunks, embeddings), len(documents), len(chunks)
+
 
 
 vectorstore = None
@@ -158,13 +180,16 @@ num_pages = 0
 num_chunks = 0
 
 if uploaded_file:
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+    file_extension = os.path.splitext(uploaded_file.name)[1]
+    with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as tmp:
+
+    # with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
         tmp.write(uploaded_file.read())
-        pdf_path = tmp.name
+        file_path = tmp.name
 
     try:
         with st.spinner("🔄 Processing PDF... This may take a moment"):
-            vectorstore, num_pages, num_chunks = build_vectorstore(pdf_path, chunk_size, chunk_overlap)
+            vectorstore, num_pages, num_chunks = build_vectorstore(file_path, chunk_size, chunk_overlap)
 
         # Success metrics in cards
         st.markdown("### 📈 Document Statistics")
