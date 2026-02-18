@@ -14,6 +14,7 @@ You can upload a PDF, ask questions about its content, and get **short, accurate
 - 🖍️ Highlighted source chunks with page numbers
 - ⚡ Cached vector store for fast performance
 - ❌ Responds with *"I don't know"* if answer is not in the PDF
+- 🧾 Stores Chat History
 
 ---
 
