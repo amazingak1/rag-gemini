@@ -14,4 +14,3 @@ langchain_huggingface
 sentence-transformers
 pypdf
 docx2txt
-time
